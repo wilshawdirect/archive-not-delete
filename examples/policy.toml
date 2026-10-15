@@ -1,0 +1,45 @@
+# Sample policy. Paths are relative to this file. Copy it, point it at real folders, then run:
+#   python -m archive_not_delete plan --policy examples/policy.toml
+# `plan` changes nothing. Read its output before you try `archive`, `trim` or `run`.
+
+manifest = "state/manifest.jsonl"   # append-only record of every copy, verification and trim
+byte_cap = "50GB"                   # most bytes one run will handle, across all roots
+max_failures = 3                    # stop the run after this many failed copies or verifications
+measure_csv = "state/growth.csv"    # where `measure` appends folder sizes
+
+[destination]
+type = "local"                      # another disk or a mounted share; must be OUTSIDE every root
+path = "/mnt/archive"
+
+[[root]]
+name = "app-logs"                   # becomes the first folder inside the archive
+path = "/var/log/myapp"
+include = ["*.log", "*.log.*", "*.gz"]
+exclude = ["current/**", "*.lock"]  # never touched, whatever else matches
+min_age = "14d"                     # only files untouched this long
+min_size = "1MB"
+byte_cap = "20GB"                   # optional per-root cap, in addition to the global one
+order = "oldest"                    # or "largest" to free the most space first
+
+[[root.purge]]                      # MAY be deleted WITHOUT an archive copy, but only when you pass --purge
+name = "scratch"
+kind = "temp"                       # cache | temp | duplicate
+globs = ["*.tmp", "*.part"]
+min_age = "2d"
+
+[[root]]
+name = "build-output"
+path = "/var/build"
+include = ["**/*.tar", "**/*.zip"]
+min_age = "30d"
+max_size = "100GB"                  # skip anything larger than this (handle those by hand)
+
+[[root.purge]]
+name = "caches"
+kind = "cache"
+globs = ["**/__pycache__/**", "**/.cache/**"]
+
+[[root.purge]]
+name = "same-bytes"                 # exact duplicates: keeps the oldest, removes the rest
+kind = "duplicate"
+globs = ["downloads/**"]

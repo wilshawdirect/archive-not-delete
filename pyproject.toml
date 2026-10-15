@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "archive-not-delete"
+version = "0.1.0"
+description = "A janitor for disks that fill up, built on one rule: nothing is deleted unless a verified copy exists elsewhere. Policy-driven, pluggable destinations (local directory, SFTP), append-only manifest, byte caps, disk floors. Not a backup system."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "ADZ" }]
+keywords = ["disk", "cleanup", "archive", "janitor", "retention", "verification", "sha256", "sftp"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Intended Audience :: System Administrators",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: System :: Archiving",
+  "Topic :: System :: Systems Administration",
+  "Typing :: Typed",
+]
+dependencies = []
+
+[project.optional-dependencies]
+sftp = ["paramiko>=3.4"]
+test = ["pytest>=7"]
+dev = ["pytest>=7", "ruff>=0.15,<0.16"]
+
+[project.scripts]
+archive-not-delete = "archive_not_delete.cli:main"
+
+[tool.setuptools]
+packages = ["archive_not_delete"]
+
+[tool.setuptools.package-data]
+archive_not_delete = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["error"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.format]
+line-ending = "lf"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]

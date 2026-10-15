@@ -1,0 +1,20 @@
+# Archive to remote storage over SFTP. Needs the optional extra:  pip install "archive-not-delete[sftp]"
+# Host keys are verified. An unknown host is REJECTED, never auto-accepted: add it to known_hosts first.
+
+manifest = "state/manifest.jsonl"
+
+[destination]
+type = "sftp"
+host = "storage.example.com"
+port = 22
+username = "archive"
+path = "/srv/archive/this-machine"   # remote base directory; it is created if missing
+key_file = "~/.ssh/id_ed25519"       # or: password_env = "ARCHIVE_SFTP_PASSWORD" (the NAME of an environment variable)
+known_hosts = "~/.ssh/known_hosts"
+connect_timeout = 15
+
+[[root]]
+name = "exports"
+path = "/data/exports"
+include = ["*.csv", "*.parquet"]
+min_age = "30d"

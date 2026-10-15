@@ -1,0 +1,7 @@
+{
+  "manifest": "state/manifest.jsonl",
+  "destination": { "type": "local", "path": "/mnt/archive" },
+  "root": [
+    { "name": "media", "path": "/data/media", "include": ["*.mov", "*.mp4"], "min_age": "90d", "order": "largest" }
+  ]
+}

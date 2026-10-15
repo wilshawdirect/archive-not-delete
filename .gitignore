@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local configuration and secrets
+.env
+.env.*
+
+# Runtime state (a real manifest records real file paths: never commit one)
+archive-manifest.jsonl
+*.manifest.jsonl
+*.lock
+growth.csv
+state/
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
