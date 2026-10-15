@@ -602,8 +602,17 @@ class Engine:
         if current.sha256 != entry.sha256:
             self._skip(result, "changed_since_archive")
             return
-        try:  # always re-read the archive copy right before removing the source; never trust the ledger alone
+        try:
             dest = lazy.get()
+        except DestinationError as exc:
+            self._fail(result, "destination_missing", path, exc)
+            return
+        try:  # a link or alias is refused BEFORE the re-read, so the reason names it (a link's read can fail first)
+            self._require_independent(dest, entry.dest_key, path)
+        except AliasError as exc:
+            self._fail(result, "destination_aliases_source", path, exc)
+            return
+        try:  # always re-read the archive copy right before removing the source; never trust the ledger alone
             stored = dest.digest(entry.dest_key)
         except DestinationError as exc:
             self._fail(result, "destination_missing", path, exc)
