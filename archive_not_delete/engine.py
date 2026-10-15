@@ -609,7 +609,10 @@ class Engine:
             return
         try:  # a link or alias is refused BEFORE the re-read, so the reason names it (a link's read can fail first)
             self._require_independent(dest, entry.dest_key, path)
-        except (AliasError, DestinationError) as exc:  # a key whose link resolves outside the destination is the same refusal
+        except (
+            AliasError,
+            DestinationError,
+        ) as exc:  # a key whose link resolves outside the destination is the same refusal
             self._fail(result, "destination_aliases_source", path, exc)
             return
         try:  # always re-read the archive copy right before removing the source; never trust the ledger alone
